@@ -17,7 +17,8 @@ public class ServerStartCommand {
                 data = myReader.nextLine();
             }
             if (data != null) {
-                URL url = new URL("http://localhost:" + data + "/shut-down");
+                System.out.println(data);
+                URL url = new URL("http://localhost:" + data + "/server/shut-down");
                 closeLastServer(url);
             }
         } catch (Exception e) {
