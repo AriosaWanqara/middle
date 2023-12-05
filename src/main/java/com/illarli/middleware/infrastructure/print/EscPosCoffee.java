@@ -33,8 +33,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
         this.printer = printer;
         switch (printer.getType()) {
             case USB -> {
-                PrintService printService = PrinterOutputStream.getPrintServiceByName(printer.getName());
                 try {
+                    PrintService printService = PrinterOutputStream.getPrintServiceByName(printer.getName());
                     outputStream = new PrinterOutputStream(printService);
                 } catch (Exception e) {
                     System.out.println(e);

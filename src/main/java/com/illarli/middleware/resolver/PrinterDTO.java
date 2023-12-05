@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class PrinterDTO {
+    private String id;
     @NotBlank(message = "The name field is required")
     private String name;
     @NotBlank(message = "The font size field is required")
@@ -29,6 +30,7 @@ public class PrinterDTO {
     private List<String> documentType;
 
     public PrinterDTO(
+            String id,
             String name,
             String fontSize,
             int copyNumber,
@@ -38,6 +40,7 @@ public class PrinterDTO {
             PrinterType type,
             List<String> documentType
     ) {
+        this.id = id;
         this.name = name;
         this.fontSize = fontSize;
         this.copyNumber = copyNumber;
@@ -57,7 +60,7 @@ public class PrinterDTO {
             documentTypes.add(DocumentType.create(s));
         });
         return new Printer(
-                UUID.randomUUID().toString(),
+                this.id != null ? this.id : UUID.randomUUID().toString(),
                 this.name,
                 this.fontSize,
                 this.copyNumber,
@@ -67,6 +70,10 @@ public class PrinterDTO {
                 this.type,
                 documentTypes
         );
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {
