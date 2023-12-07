@@ -16,9 +16,9 @@ public class PrintVoucherDTO {
     private String companyRUC;
     @NotNull(message = "The forceAccounting is required")
     private boolean forceAccounting;
-    private String companyAddress;
-    private String subsidiaryAddress;
-    private String companyPhone;
+    private String companyAddress = "N/A";
+    private String subsidiaryAddress = "N/A";
+    private String companyPhone = "N/A";
     @NotNull(message = "The companyEmail is required")
     @Email(message = "The companyEmail is not valid")
     private String companyEmail;
@@ -28,7 +28,7 @@ public class PrintVoucherDTO {
     private String clientName;
     @NotNull(message = "The clientRUC is required")
     private String clientRUC;
-    private String clientPhone;
+    private String clientPhone = "N/A";
     private String clientAddress = "N/A";
     @NotEmpty(message = "The products is required")
     private List<Product> products;
@@ -145,5 +145,28 @@ public class PrintVoucherDTO {
 
     public String getEmployee() {
         return employee;
+    }
+
+    @Override
+    public String toString() {
+        return "PrintVoucherDTO{" +
+                "businessName='" + businessName + '\'' +
+                ", commercialName='" + commercialName + '\'' +
+                ", companyRUC='" + companyRUC + '\'' +
+                ", forceAccounting=" + forceAccounting +
+                ", companyAddress='" + companyAddress + '\'' +
+                ", subsidiaryAddress='" + subsidiaryAddress + '\'' +
+                ", companyPhone='" + companyPhone + '\'' +
+                ", companyEmail='" + companyEmail + '\'' +
+                ", transactionNumber='" + transactionNumber + '\'' +
+                ", clientName='" + clientName + '\'' +
+                ", clientRUC='" + clientRUC + '\'' +
+                ", clientPhone='" + clientPhone + '\'' +
+                ", clientAddress='" + clientAddress + '\'' +
+                ", products=" + products +
+                ", details=" + details +
+                ", paymentMethod=" + paymentMethod +
+                ", employee='" + employee + '\'' +
+                '}';
     }
 }

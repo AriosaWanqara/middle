@@ -97,13 +97,12 @@ public class SendPrintController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/open-drawer/{id}")
-    public ResponseEntity<?> openCashDrawer(@PathVariable String id) {
-        Optional<Printer> printer = this.printerService.getPrinterById(id);
+    @GetMapping("/open-drawer/{code}")
+    public ResponseEntity<?> openCashDrawer(@PathVariable String code) {
+        Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
         if (printer.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Not printers found", HttpStatus.BAD_REQUEST);
         }
-        System.out.println(printer.get().toString());
         EscPosCoffee escPosCoffee = new EscPosCoffee(printer.get());
         SendPrintService sendPrintService = new SendPrintService(escPosCoffee);
         if (sendPrintService.openCashDrawer()) {
@@ -112,9 +111,9 @@ public class SendPrintController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/print-quotation/{id}")
-    public ResponseEntity<?> printQuotation(@Valid @RequestBody PrintQuotationDTO quotation, @PathVariable String id) {
-        Optional<Printer> printer = this.printerService.getPrinterById(id);
+    @PostMapping("/print-quotation/{code}")
+    public ResponseEntity<?> printQuotation(@Valid @RequestBody PrintQuotationDTO quotation, @PathVariable String code) {
+        Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
         if (printer.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -127,9 +126,9 @@ public class SendPrintController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/print-cash-drawer/{id}")
-    public ResponseEntity<?> printCashDrawerDetail(@Valid @RequestBody PrintCashDrawerCloseDetailDTO cashDrawerDetail, @PathVariable String id) {
-        Optional<Printer> printer = this.printerService.getPrinterById(id);
+    @PostMapping("/print-cash-drawer/{code}")
+    public ResponseEntity<?> printCashDrawerDetail(@Valid @RequestBody PrintCashDrawerCloseDetailDTO cashDrawerDetail, @PathVariable String code) {
+        Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
         if (printer.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -142,9 +141,9 @@ public class SendPrintController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/print-command/{id}")
-    public ResponseEntity<?> printCommand(@Valid @RequestBody PrintCommandDTO command, @PathVariable String id) {
-        Optional<Printer> printer = this.printerService.getPrinterById(id);
+    @PostMapping("/print-command/{code}")
+    public ResponseEntity<?> printCommand(@Valid @RequestBody PrintCommandDTO command, @PathVariable String code) {
+        Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
         if (printer.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -157,9 +156,9 @@ public class SendPrintController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/print-electronic/{id}")
-    public ResponseEntity<?> printElectronicInvoice(@Valid @RequestBody PrintElectronicInvoiceDTO electronicInvoice, @PathVariable String id) {
-        Optional<Printer> printer = this.printerService.getPrinterById(id);
+    @PostMapping("/print-electronic/{code}")
+    public ResponseEntity<?> printElectronicInvoice(@Valid @RequestBody PrintElectronicInvoiceDTO electronicInvoice, @PathVariable String code) {
+        Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
         if (printer.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -172,9 +171,9 @@ public class SendPrintController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/print-pre-ticket/{id}")
-    public ResponseEntity<?> printPreTicket(@Valid @RequestBody PrintPreTicketDTO preTicket, @PathVariable String id) {
-        Optional<Printer> printer = this.printerService.getPrinterById(id);
+    @PostMapping("/print-pre-ticket/{code}")
+    public ResponseEntity<?> printPreTicket(@Valid @RequestBody PrintPreTicketDTO preTicket, @PathVariable String code) {
+        Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
         if (printer.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -187,13 +186,13 @@ public class SendPrintController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/print-voucher/{id}")
-    public ResponseEntity<?> printVoucher(@Valid @RequestBody PrintVoucherDTO voucher, @PathVariable String id) {
-        Optional<Printer> printer = this.printerService.getPrinterById(id);
+    @PostMapping("/print-voucher/{code}")
+    public ResponseEntity<?> printVoucher(@Valid @RequestBody PrintVoucherDTO voucher, @PathVariable String code) {
+        Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
         if (printer.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        System.out.println(printer.get().toString());
+        System.out.println(voucher.toString());
         EscPosCoffee escPosCoffee = new EscPosCoffee(printer.get());
         SendPrintService sendPrintService = new SendPrintService(escPosCoffee);
         if (sendPrintService.voucher(voucher)) {

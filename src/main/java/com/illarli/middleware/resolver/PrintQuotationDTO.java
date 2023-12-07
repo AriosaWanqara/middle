@@ -26,7 +26,7 @@ public class PrintQuotationDTO {
     private String clientName;
     @NotNull(message = "The clientRUC is required")
     private String clientRUC;
-    private String clientPhone;
+    private String clientPhone = "N/A";
     private String clientAddress = "N/A";
     @NotEmpty(message = "The details is required")
     private Map<String, Double> details;

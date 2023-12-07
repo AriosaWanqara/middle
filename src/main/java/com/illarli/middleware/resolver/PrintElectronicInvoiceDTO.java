@@ -18,9 +18,9 @@ public class PrintElectronicInvoiceDTO {
     private String companyRUC;
     @NotNull(message = "The forceAccounting is required")
     private boolean forceAccounting;
-    private String companyAddress;
-    private String subsidiaryAddress;
-    private String companyPhone;
+    private String companyAddress = "N/A";
+    private String subsidiaryAddress = "N/A";
+    private String companyPhone = "N/A";
     @NotNull(message = "The companyEmail is required")
     @Email(message = "The companyEmail is not valid")
     private String companyEmail;
@@ -33,8 +33,8 @@ public class PrintElectronicInvoiceDTO {
     private String clientName;
     @NotNull(message = "The clientRUC is required")
     private String clientRUC;
-    private String clientPhone;
-    private String clientAddress;
+    private String clientPhone = "N/A";
+    private String clientAddress = "N/A";
     @NotEmpty(message = "The products is required")
     private List<Product> products;
     @NotEmpty(message = "The details is required")
@@ -90,6 +90,9 @@ public class PrintElectronicInvoiceDTO {
         this.paymentMethod = paymentMethod;
         this.employee = employee;
         this.accessPassword = accessPassword;
+    }
+
+    private PrintElectronicInvoiceDTO() {
     }
 
     public String getTransactionNumber() {

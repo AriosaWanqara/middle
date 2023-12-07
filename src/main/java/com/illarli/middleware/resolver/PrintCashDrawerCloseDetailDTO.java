@@ -70,6 +70,9 @@ public class PrintCashDrawerCloseDetailDTO {
         this.details = details;
     }
 
+    private PrintCashDrawerCloseDetailDTO() {
+    }
+
     public int getCloseCashDrawerNumber() {
         return closeCashDrawerNumber;
     }

@@ -54,6 +54,10 @@ public class PrinterService {
         return printerRepository.findById(id);
     }
 
+    public Optional<Printer> getPrinterByDocumentTypeCode(String code) {
+        return printerRepository.findByDocumentType_code(code);
+    }
+
     public boolean delete(String id) {
         try {
 
