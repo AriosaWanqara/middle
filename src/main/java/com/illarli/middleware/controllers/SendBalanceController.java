@@ -5,7 +5,6 @@ import com.illarli.middleware.models.Balance;
 import com.illarli.middleware.service.BalanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,24 +29,32 @@ public class SendBalanceController {
         return this.balanceService.getComList(jSerialComm);
     }
 
-    @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
-    public String greeting(@Payload String text) throws InterruptedException {
+    @MessageMapping("/active")
+    @SendTo("/printer-ws/balance-reader")
+    public void openBalanceWebSocket() {
         JSerialComm.flag = true;
         JSerialComm jSerialComm = new JSerialComm();
         List<Balance> balances = this.balanceService.getAll();
         if (!balances.isEmpty()) {
             Balance balance = balances.get(0);
             jSerialComm.open(s -> {
-                messagingTemplate.convertAndSend("/topic/greetings", s);
+                messagingTemplate.convertAndSend("/printer-ws/balance-reader", s);
                 return s;
             }, balance);
         }
-        return "";
+//        JSerialComm.flag = true;
+//        while (JSerialComm.flag) {
+//            try {
+//                messagingTemplate.convertAndSend("/printer-ws/balance-reader", "s");
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
     }
 
     @MessageMapping("/stop")
-    public void send() {
+    public void closeBalanceWebSocket() {
         JSerialComm.flag = false;
     }
 }

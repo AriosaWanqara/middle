@@ -1,5 +1,6 @@
 package com.illarli.middleware.resolver;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,8 +42,26 @@ public class HandlerValidException extends ResponseEntityExceptionHandler {
         Map<String, List<String>> body = new HashMap<>();
         List<String> errors = new LinkedList<>();
         System.out.println(ex.toString());
-        errors.add(ex.getMessage());
+        String error;
+        try {
+            error = ex.getMessage().split("DTO")[1];
+        } catch (NullPointerException e) {
+            error = "";
+        }
+        if (error.isEmpty()) {
+            error = ex.getMessage();
+        } else {
+            error = error.substring(2, error.length() - 3) + " bad deserialize";
+        }
+        errors.add(error);
         body.put("errors", errors);
+        if (ex.getRootCause() instanceof InvalidFormatException) {
+            try {
+                System.out.println(ex.getHttpInputMessage().getBody());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 }
