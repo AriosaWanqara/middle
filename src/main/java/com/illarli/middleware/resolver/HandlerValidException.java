@@ -41,12 +41,10 @@ public class HandlerValidException extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         Map<String, List<String>> body = new HashMap<>();
         List<String> errors = new LinkedList<>();
-        System.out.println(ex.toString());
-        String error;
+        String error = "";
         try {
             error = ex.getMessage().split("DTO")[1];
         } catch (NullPointerException e) {
-            error = "";
         }
         if (error.isEmpty()) {
             error = ex.getMessage();
