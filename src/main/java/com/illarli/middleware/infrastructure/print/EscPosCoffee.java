@@ -28,6 +28,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
     private Printer printer;
     private OutputStream outputStream;
+    private DecimalFormat df = new DecimalFormat("####0.00");
 
     public EscPosCoffee(Printer printer) {
         this.printer = printer;
@@ -245,7 +246,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), equalDivider);
 
-            printDetails(escPos, bodyStyle, quotation.getDetails());
+            this.printDetails(escPos, bodyStyle, quotation.getDetails());
 
             escPos.feed(5);
             escPos.cut(EscPos.CutMode.FULL);
@@ -366,7 +367,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), equalDivider);
 
-            printDetails(escPos, bodyStyle, preTicket.getDetails());
+            this.printDetails(escPos, bodyStyle, preTicket.getDetails());
 
             escPos.feed(5);
             escPos.cut(EscPos.CutMode.FULL);
@@ -460,7 +461,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 //            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Center), "Ambiente: PRUEBA");
             escPos.feed(1);
 
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Center), "EMPRESA PRUEBA");
+            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Center), electronicInvoice.getBusinessName());
             if (electronicInvoice.getCommercialName() != null)
                 escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Center), electronicInvoice.getCommercialName());
             escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Center), "RUC: " + electronicInvoice.getCompanyRUC());
@@ -504,12 +505,12 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), equalsDivider);
 
-            printDetails(escPos, bodyStyle, electronicInvoice.getDetails());
+            this.printDetails(escPos, bodyStyle, electronicInvoice.getDetails());
 
             escPos.feed(1);
             electronicInvoice.getPaymentMethod().forEach((paymentMethod, value) -> {
                 try {
-                    escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), "Pago en " + paymentMethod + "=" + value);
+                    escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), "Pago en " + paymentMethod + "=" + this.df.format(value));
                 } catch (IOException e) {
                     System.out.println(e);
                 }
@@ -582,7 +583,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), equalsDivider);
 
-            printDetails(escPos, bodyStyle, voucher.getDetails());
+            this.printDetails(escPos, bodyStyle, voucher.getDetails());
 
             escPos.feed(1);
 
@@ -669,7 +670,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             makeDrawerProductDetails(escPos, bodyStyle, cashDrawerCloseDetail.getEgress());
             escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), equalsDivider);
 
-            printDetails(escPos, bodyStyle, cashDrawerCloseDetail.getDetails());
+            this.printDetails(escPos, bodyStyle, cashDrawerCloseDetail.getDetails());
 
             escPos.feed(1);
             escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Center), "El Valor del Dinero en EFECTIVO DEL SISTEMA (a) es igual al valor del Dinero en EFECTIVO CONTADO (b)");
@@ -734,7 +735,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             String BodyLeft = mockProduct.getQuantity() + " " + mockProduct.getName();
             String BodyRight = "";
             String priceToString = new StringBuilder(String.valueOf(
-                    mockProduct.getPrice() * mockProduct.getQuantity())).reverse().toString();
+                    this.df.format(mockProduct.getPrice() * mockProduct.getQuantity()))).reverse().toString();
             for (int j = 0; j < 6; j++) {
                 if (priceToString.length() > j) {
                     bodyWitheSpace[5 - j] = String.valueOf(priceToString.charAt(j));
@@ -742,7 +743,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
                     bodyWitheSpace[5 - j] = " ";
                 }
             }
-            BodyRight = mockProduct.getPrice() + " " + String.join("", bodyWitheSpace);
+            BodyRight = this.df.format(mockProduct.getPrice()) + " " + String.join("", bodyWitheSpace);
             String[] middleWitheSpace = new String[this.printer.getCharacterNumber() - BodyLeft.length() - BodyRight.length()];
             Arrays.fill(middleWitheSpace, " ");
             productDetails.add(BodyLeft + String.join("", middleWitheSpace) + BodyRight);
@@ -776,13 +777,12 @@ public class EscPosCoffee implements PrinterLibraryRepository {
         return dateString;
     }
 
-    private static void printDetails(EscPos escPos, Style bodyStyle, Map<String, Double> details) throws IOException {
+    private void printDetails(EscPos escPos, Style bodyStyle, Map<String, Double> details) throws IOException {
         List<String> detailsToPrint = new ArrayList<>(List.of());
         details.forEach((s, aFloat) -> {
             String[] detailsWitheSpace = new String[8];
-            DecimalFormat df = new DecimalFormat("####0.00");
             Arrays.fill(detailsWitheSpace, " ");
-            String subtotalToString = new StringBuilder(df.format(aFloat)).reverse().toString();
+            String subtotalToString = new StringBuilder(this.df.format(aFloat)).reverse().toString();
             for (int j = 0; j < 8; j++) {
                 if (subtotalToString.length() > j) {
                     detailsWitheSpace[7 - j] = String.valueOf(subtotalToString.charAt(j));

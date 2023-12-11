@@ -44,7 +44,7 @@ public class HandlerValidException extends ResponseEntityExceptionHandler {
         String error = "";
         try {
             error = ex.getMessage().split("DTO")[1];
-        } catch (NullPointerException e) {
+        } catch (NullPointerException ignored) {
         }
         if (error.isEmpty()) {
             error = ex.getMessage();
