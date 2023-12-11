@@ -1,7 +1,5 @@
 package com.illarli.middleware.mock;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +9,9 @@ public class Product {
     private Double price;
 
     public Product(String name, Integer quantity, Double price) {
-        BigDecimal bd = BigDecimal.valueOf(price);
-        bd = bd.setScale(2, RoundingMode.HALF_UP);
         this.name = name;
         this.quantity = quantity;
-        this.price = bd.doubleValue();
-        System.out.println(this.price);
+        this.price = price;
     }
 
     public Product() {
