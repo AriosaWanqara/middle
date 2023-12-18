@@ -36,7 +36,7 @@ public class CashDrawer {
     public String getPort() {
         return port;
     }
-    
+
     public Printer getPrinter() {
         return printer;
     }

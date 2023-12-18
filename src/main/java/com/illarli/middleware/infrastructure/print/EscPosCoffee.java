@@ -29,7 +29,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
     private Printer printer;
     private OutputStream outputStream;
-    private DecimalFormat df = new DecimalFormat("####0.00");
+    private final DecimalFormat df = new DecimalFormat("####0.00");
 
     public EscPosCoffee(Printer printer) {
         this.printer = printer;
@@ -39,14 +39,14 @@ public class EscPosCoffee implements PrinterLibraryRepository {
                     PrintService printService = PrinterOutputStream.getPrintServiceByName(printer.getName());
                     outputStream = new PrinterOutputStream(printService);
                 } catch (Exception e) {
-                    System.out.println(e);
+                    System.out.println(e.getMessage());
                 }
             }
             case WIFI, BLUETOOTH -> {
                 try {
                     outputStream = new TcpIpOutputStream(printer.getAddress(), printer.getPort());
                 } catch (Exception e) {
-                    System.out.println(e);
+                    System.out.println(e.getMessage());
                 }
             }
         }
@@ -136,7 +136,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             }
             return true;
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
             return false;
         }
     }
@@ -238,7 +238,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escPos.close();
             return true;
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
             return false;
         }
     }
@@ -405,7 +405,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escPos.close();
             return true;
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
             return false;
         }
 
@@ -425,7 +425,6 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escPos.writeLF(titleStyle, "FACTURA ELECTRONICA NO:");
             escPos.writeLF(titleStyle, electronicInvoice.getTransactionNumber());
 
-//            escPos.feed(1);
 //            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Center), "Ambiente: PRUEBA");
             escPos.feed(1);
 
@@ -466,7 +465,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
                 try {
                     escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), "Pago en " + paymentMethod + "=" + this.df.format(value));
                 } catch (IOException e) {
-                    System.out.println(e);
+                    System.out.println(e.getMessage());
                 }
             });
             escPos.feed(1);
@@ -531,7 +530,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
                 try {
                     escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), "Pago en " + paymentMethod + "=" + value);
                 } catch (IOException e) {
-                    System.out.println(e);
+                    System.out.println(e.getMessage());
                 }
             });
 
@@ -545,7 +544,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             return true;
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
             return false;
         }
     }
@@ -628,7 +627,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             return true;
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
             return false;
         }
     }
@@ -668,36 +667,9 @@ public class EscPosCoffee implements PrinterLibraryRepository {
         }
     }
 
-    private void makeProductDetails(EscPos escPos, Style bodyStyle, List<Product> mockProducts) throws IOException {
-        List<String> productDetails = new ArrayList<>(List.of());
-        for (Product mockProduct : mockProducts) {
-            String[] bodyWitheSpace = new String[6];
-            String BodyLeft = mockProduct.getQuantity() + " " + mockProduct.getName();
-            String BodyRight = "";
-            String priceToString = new StringBuilder(String.valueOf(
-                    this.df.format(mockProduct.getPrice() * mockProduct.getQuantity()))).reverse().toString();
-            for (int j = 0; j < 6; j++) {
-                if (priceToString.length() > j) {
-                    bodyWitheSpace[5 - j] = String.valueOf(priceToString.charAt(j));
-                } else {
-                    bodyWitheSpace[5 - j] = " ";
-                }
-            }
-            BodyRight = this.df.format(mockProduct.getPrice()) + " " + String.join("", bodyWitheSpace);
-            String[] middleWitheSpace = new String[this.printer.getCharacterNumber() - BodyLeft.length() - BodyRight.length()];
-            Arrays.fill(middleWitheSpace, " ");
-            productDetails.add(BodyLeft + String.join("", middleWitheSpace) + BodyRight);
-        }
-
-        for (String productDetail : productDetails) {
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), productDetail);
-        }
-    }
-
     private void makeDrawerProductDetails(EscPos escPos, Style bodyStyle, List<Product> mockProducts) throws IOException {
         List<String> productDetails = new ArrayList<>(List.of());
         for (Product mockProduct : mockProducts) {
-            String[] bodyWitheSpace = new String[6];
             String BodyLeft = mockProduct.getQuantity() + " " + mockProduct.getName();
             String BodyRight = String.valueOf(mockProduct.getPrice());
             String[] middleWitheSpace = new String[this.printer.getCharacterNumber() - BodyLeft.length() - BodyRight.length()];
@@ -712,9 +684,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
     private static String getDateString() {
         Date utilDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY hh:mm");
-        String dateString = sdf.format(utilDate);
-        return dateString;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        return sdf.format(utilDate);
     }
 
     private void printDetails(EscPos escPos, Style bodyStyle, Map<String, Double> details) throws IOException {

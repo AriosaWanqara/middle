@@ -24,7 +24,9 @@ public class PrinterDTO {
     private int characterNumber;
     private String address;
     private int port;
-    private int detailsType = 1;
+    @Min(value = 1, message = "Min value is 1")
+    @Max(value = 3, message = "Max value is 3")
+    private int detailsType;
     @NotNull(message = "The type field is required")
     private PrinterType type;
     @NotEmpty(message = "The id documentType is required")
@@ -102,6 +104,10 @@ public class PrinterDTO {
 
     public int getPort() {
         return port;
+    }
+
+    public int getDetailsType() {
+        return detailsType;
     }
 
     public PrinterType getType() {

@@ -102,20 +102,6 @@ public class SendPrintController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/open-drawer/{code}")
-    public ResponseEntity<?> openCashDrawer(@PathVariable String code) {
-        Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
-        if (printer.isEmpty()) {
-            return new ResponseEntity<>("Not printers found", HttpStatus.BAD_REQUEST);
-        }
-        EscPosCoffee escPosCoffee = new EscPosCoffee(printer.get());
-        SendPrintService sendPrintService = new SendPrintService(escPosCoffee);
-        if (sendPrintService.openCashDrawer()) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-
     @PostMapping("/print-quotation/{code}")
     public ResponseEntity<?> printQuotation(@Valid @RequestBody PrintQuotationDTO quotation, @PathVariable String code) {
         Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
@@ -137,7 +123,7 @@ public class SendPrintController {
     public ResponseEntity<?> printCashDrawerDetail(@Valid @RequestBody PrintCashDrawerCloseDetailDTO cashDrawerDetail, @PathVariable String code) {
         Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
         if (printer.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Printer not found", HttpStatus.CONFLICT);
         }
         System.out.println(printer.get().toString());
         EscPosCoffee escPosCoffee = new EscPosCoffee(printer.get());
