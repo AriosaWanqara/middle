@@ -8,10 +8,11 @@ import com.github.anastaciocintra.escpos.barcode.QRCode;
 import com.github.anastaciocintra.escpos.image.*;
 import com.github.anastaciocintra.output.PrinterOutputStream;
 import com.github.anastaciocintra.output.TcpIpOutputStream;
-import com.illarli.middleware.mock.Product;
 import com.illarli.middleware.models.Printer;
+import com.illarli.middleware.models.Product;
 import com.illarli.middleware.models.repositories.PrinterLibraryRepository;
 import com.illarli.middleware.resolver.*;
+import com.illarli.middleware.utils.PrintDetails;
 
 import javax.imageio.ImageIO;
 import javax.print.PrintService;
@@ -226,25 +227,9 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             escPos.feed(1);
 
-            String HeaderLeft = "Cant Descripcion";
-            String HeaderRight = "P.U.  Total";
+            PrintDetails printDetails = new PrintDetails(this.printer);
+            printDetails.printDetail(escPos, quotation.getProducts());
 
-            String[] HeaderWitheSpace = new String[this.printer.getCharacterNumber() - HeaderLeft.length() - HeaderRight.length()];
-            String[] equalDividerArr = new String[this.printer.getCharacterNumber()];
-
-            Arrays.fill(HeaderWitheSpace, " ");
-            Arrays.fill(equalDividerArr, "=");
-
-            String equalDivider = String.join("", equalDividerArr);
-
-            String Head = HeaderLeft + String.join("", HeaderWitheSpace) + HeaderRight;
-
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), Head);
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), equalDivider);
-
-            makeProductDetails(escPos, bodyStyle, quotation.getProducts());
-
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), equalDivider);
 
             this.printDetails(escPos, bodyStyle, quotation.getDetails());
 
@@ -347,25 +332,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             bodyStyle.resetLineSpacing();
 
-            String HeaderLeft = "Cant Descripcion";
-            String HeaderRight = "P.U.  Total";
-
-            String[] HeaderWitheSpace = new String[this.printer.getCharacterNumber() - HeaderLeft.length() - HeaderRight.length()];
-            String[] equalDividerArr = new String[this.printer.getCharacterNumber()];
-
-            Arrays.fill(HeaderWitheSpace, " ");
-            Arrays.fill(equalDividerArr, "=");
-
-            String equalDivider = String.join("", equalDividerArr);
-
-            String Head = HeaderLeft + String.join("", HeaderWitheSpace) + HeaderRight;
-            escPos.feed(1);
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), Head);
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), equalDivider);
-
-            makeProductDetails(escPos, bodyStyle, preTicket.getProducts());
-
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), equalDivider);
+            PrintDetails printDetails = new PrintDetails(this.printer);
+            printDetails.printDetail(escPos, preTicket.getProducts());
 
             this.printDetails(escPos, bodyStyle, preTicket.getDetails());
 
@@ -409,17 +377,17 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escPos.writeLF(bodyStyle, equalDivider);
             escPos.feed(1);
             List<String> productToPrint = new LinkedList<>(List.of());
-            command.getProducts().forEach((quantity, name) -> {
+            command.getProducts().forEach(product -> {
                 String[] leftSideWitheSpace = new String[3];
                 Arrays.fill(leftSideWitheSpace, " ");
                 for (int i = 0; i < leftSideWitheSpace.length; i++) {
-                    if (String.valueOf(quantity).length() > i) {
-                        leftSideWitheSpace[i] = String.valueOf(String.valueOf(quantity).charAt(i));
+                    if (String.valueOf(product.getQuantity()).length() > i) {
+                        leftSideWitheSpace[i] = String.valueOf(String.valueOf(product.getQuantity()).charAt(i));
                     } else {
                         leftSideWitheSpace[i] = " ";
                     }
                 }
-                productToPrint.add(String.join("", leftSideWitheSpace) + " " + name);
+                productToPrint.add(String.join("", leftSideWitheSpace) + " " + product.getName());
             });
             productToPrint.forEach(System.out::println);
             for (String message : productToPrint) {
@@ -488,22 +456,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             escPos.feed(1);
 
-            String leftHeadSide = "Cant Descripcion";
-            String rightHeadSide = "P.U. Total";
-            String[] headWitheSpace = new String[this.printer.getCharacterNumber() - leftHeadSide.length() - rightHeadSide.length()];
-            String[] equalsArr = new String[this.printer.getCharacterNumber()];
-            Arrays.fill(headWitheSpace, " ");
-            Arrays.fill(equalsArr, "=");
-
-            String equalsDivider = String.join("", equalsArr);
-            String head = leftHeadSide + String.join("", headWitheSpace) + rightHeadSide;
-
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), head);
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), equalsDivider);
-
-            makeProductDetails(escPos, bodyStyle, electronicInvoice.getProducts());
-
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), equalsDivider);
+            PrintDetails printDetails = new PrintDetails(this.printer);
+            printDetails.printDetail(escPos, electronicInvoice.getProducts());
 
             this.printDetails(escPos, bodyStyle, electronicInvoice.getDetails());
 
@@ -566,22 +520,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             escPos.feed(1);
 
-            String leftHeadSide = "Cant Descripcion";
-            String rightHeadSide = "P.U. Total";
-            String[] headWitheSpace = new String[this.printer.getCharacterNumber() - leftHeadSide.length() - rightHeadSide.length()];
-            String[] equalsArr = new String[this.printer.getCharacterNumber()];
-            Arrays.fill(headWitheSpace, " ");
-            Arrays.fill(equalsArr, "=");
-
-            String equalsDivider = String.join("", equalsArr);
-            String head = leftHeadSide + String.join("", headWitheSpace) + rightHeadSide;
-
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), head);
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), equalsDivider);
-
-            makeProductDetails(escPos, bodyStyle, voucher.getProducts());
-
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), equalsDivider);
+            PrintDetails printDetails = new PrintDetails(this.printer);
+            printDetails.printDetail(escPos, voucher.getProducts());
 
             this.printDetails(escPos, bodyStyle, voucher.getDetails());
 

@@ -1,12 +1,12 @@
 package com.illarli.middleware.resolver;
 
-import com.illarli.middleware.mock.Product;
+import com.illarli.middleware.models.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class PrintVoucherDTO {
     @NotNull(message = "The businessName is required")
@@ -56,7 +56,8 @@ public class PrintVoucherDTO {
             List<Product> products,
             Map<String, Double> details,
             Map<String, Double> paymentMethod,
-            String employee) {
+            String employee
+    ) {
         this.businessName = businessName;
         this.commercialName = commercialName;
         this.companyRUC = companyRUC;
@@ -168,5 +169,77 @@ public class PrintVoucherDTO {
                 ", paymentMethod=" + paymentMethod +
                 ", employee='" + employee + '\'' +
                 '}';
+    }
+
+    public PrinterSpooler createPrinterSpooler() {
+        List<Details> spoolerDetails = new ArrayList<>(List.of());
+        List<Details> spoolerPaymentMethods = new ArrayList<>(List.of());
+        Client client = new Client(this.clientName, this.clientRUC, this.getClientPhone(), this.getClientAddress());
+        Company company = new Company(
+                this.businessName,
+                this.commercialName,
+                this.companyRUC,
+                this.forceAccounting,
+                this.companyAddress,
+                this.subsidiaryAddress,
+                this.companyPhone,
+                this.companyEmail,
+                false,
+                false,
+                null
+        );
+        this.details.forEach((key, value) -> {
+            spoolerDetails.add(new Details(key, value));
+        });
+        this.paymentMethod.forEach((key, value) -> {
+            spoolerPaymentMethods.add(new Details(key, value));
+        });
+        return new PrinterSpooler(
+                UUID.randomUUID().toString(),
+                this.employee,
+                getDateString(),
+                this.transactionNumber,
+                "03",
+                null,
+                null,
+                spoolerDetails,
+                spoolerPaymentMethods,
+                client,
+                this.getProducts(),
+                company
+        );
+    }
+
+    private static String getDateString() {
+        Date utilDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        return sdf.format(utilDate);
+    }
+
+    public static PrintVoucherDTO serializer(PrinterSpooler printerSpooler) {
+        Company company = printerSpooler.getCompany();
+        Client client = printerSpooler.getClient();
+        Map<String, Double> details = new HashMap<>();
+        Map<String, Double> paymentMethods = new HashMap<>();
+
+        return new PrintVoucherDTO(
+                company.getBusinessName(),
+                company.getCommercialName(),
+                company.getRUC(),
+                company.isForceAccounting(),
+                company.getCompanyAddress(),
+                company.getSubsidiaryAddress(),
+                company.getCompanyPhone(),
+                company.getCompanyEmail(),
+                printerSpooler.getCode(),
+                client.getClientName(),
+                company.getRUC(),
+                client.getClientPhone(),
+                client.getClientAddress(),
+                printerSpooler.getProducts(),
+                details,
+                paymentMethods,
+                printerSpooler.getEmployee()
+        );
     }
 }

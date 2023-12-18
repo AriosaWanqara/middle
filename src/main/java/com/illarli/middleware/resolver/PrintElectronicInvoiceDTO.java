@@ -1,12 +1,12 @@
 package com.illarli.middleware.resolver;
 
-import com.illarli.middleware.mock.Product;
+import com.illarli.middleware.models.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class PrintElectronicInvoiceDTO {
     @NotNull(message = "The transactionNumber is required")
@@ -17,7 +17,7 @@ public class PrintElectronicInvoiceDTO {
     @NotNull(message = "The companyRUC is required")
     private String companyRUC;
     @NotNull(message = "The forceAccounting is required")
-    private boolean forceAccounting;
+    private boolean forceAccounting = false;
     private String companyAddress = "N/A";
     private String subsidiaryAddress = "N/A";
     private String companyPhone = "N/A";
@@ -25,7 +25,7 @@ public class PrintElectronicInvoiceDTO {
     @Email(message = "The companyEmail is not valid")
     private String companyEmail;
     @NotNull(message = "The rimpe is required")
-    private boolean rimpe;
+    private boolean rimpe = false;
     @NotNull(message = "The withholdingAgent is required")
     private boolean withholdingAgent;
     private String withholdingAgentResolution;
@@ -90,6 +90,51 @@ public class PrintElectronicInvoiceDTO {
         this.paymentMethod = paymentMethod;
         this.employee = employee;
         this.accessPassword = accessPassword;
+    }
+
+    public PrinterSpooler createPrinterSpooler() {
+        List<Details> spoolerDetails = new ArrayList<>(List.of());
+        List<Details> spoolerPaymentMethods = new ArrayList<>(List.of());
+        Client client = new Client(this.clientName, this.clientRUC, this.clientPhone, this.clientAddress);
+        Company company = new Company(
+                this.businessName,
+                this.commercialName,
+                this.companyRUC,
+                this.forceAccounting,
+                this.companyAddress,
+                this.subsidiaryAddress,
+                this.companyPhone,
+                this.companyEmail,
+                this.rimpe,
+                this.withholdingAgent,
+                this.withholdingAgentResolution
+        );
+        this.details.forEach((key, value) -> {
+            spoolerDetails.add(new Details(key, value));
+        });
+        this.paymentMethod.forEach((key, value) -> {
+            spoolerPaymentMethods.add(new Details(key, value));
+        });
+        return new PrinterSpooler(
+                UUID.randomUUID().toString(),
+                this.employee,
+                getDateString(),
+                this.transactionNumber,
+                "01",
+                null,
+                this.accessPassword,
+                spoolerDetails,
+                spoolerPaymentMethods,
+                client,
+                this.getProducts(),
+                company
+        );
+    }
+
+    private static String getDateString() {
+        Date utilDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        return sdf.format(utilDate);
     }
 
     private PrintElectronicInvoiceDTO() {
@@ -177,5 +222,68 @@ public class PrintElectronicInvoiceDTO {
 
     public String getAccessPassword() {
         return accessPassword;
+    }
+
+    public static PrintElectronicInvoiceDTO serialize(PrinterSpooler printerSpooler) {
+        Company company = printerSpooler.getCompany();
+        Client client = printerSpooler.getClient();
+        Map<String, Double> details = new HashMap<>();
+        Map<String, Double> paymentMethods = new HashMap<>();
+        printerSpooler.getDetails().forEach(it -> {
+            details.put(it.getKeyName(), it.getKeyValue());
+        });
+        printerSpooler.getPaymentMethods().forEach(it -> {
+            paymentMethods.put(it.getKeyName(), it.getKeyValue());
+        });
+        return new PrintElectronicInvoiceDTO(
+                printerSpooler.getCode(),
+                company.getBusinessName(),
+                company.getCommercialName(),
+                company.getRUC(),
+                company.isForceAccounting(),
+                company.getCompanyAddress(),
+                company.getSubsidiaryAddress(),
+                company.getCompanyPhone(),
+                company.getCompanyEmail(),
+                company.isRimpe(),
+                company.isWithholdingAgent(),
+                company.getWithholdingAgentResolution(),
+                client.getClientName(),
+                client.getDNI(),
+                client.getClientPhone(),
+                client.getClientAddress(),
+                printerSpooler.getProducts(),
+                details,
+                paymentMethods,
+                printerSpooler.getEmployee(),
+                printerSpooler.getExtraData()
+        );
+    }
+
+    @Override
+    public String toString() {
+        return "PrintElectronicInvoiceDTO{" +
+                "transactionNumber='" + transactionNumber + '\'' +
+                ", businessName='" + businessName + '\'' +
+                ", commercialName='" + commercialName + '\'' +
+                ", companyRUC='" + companyRUC + '\'' +
+                ", forceAccounting=" + forceAccounting +
+                ", companyAddress='" + companyAddress + '\'' +
+                ", subsidiaryAddress='" + subsidiaryAddress + '\'' +
+                ", companyPhone='" + companyPhone + '\'' +
+                ", companyEmail='" + companyEmail + '\'' +
+                ", rimpe=" + rimpe +
+                ", withholdingAgent=" + withholdingAgent +
+                ", withholdingAgentResolution='" + withholdingAgentResolution + '\'' +
+                ", clientName='" + clientName + '\'' +
+                ", clientRUC='" + clientRUC + '\'' +
+                ", clientPhone='" + clientPhone + '\'' +
+                ", clientAddress='" + clientAddress + '\'' +
+                ", products=" + products +
+                ", details=" + details +
+                ", paymentMethod=" + paymentMethod +
+                ", employee='" + employee + '\'' +
+                ", accessPassword='" + accessPassword + '\'' +
+                '}';
     }
 }

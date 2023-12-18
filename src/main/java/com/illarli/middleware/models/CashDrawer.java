@@ -4,6 +4,8 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class CashDrawer {
@@ -11,11 +13,12 @@ public class CashDrawer {
     private String id;
     @Nullable
     private String port;
-    @Nullable
-    private String printer;
+    @ManyToOne()
+    @JoinColumn(name = "printer_id", nullable = false)
+    private Printer printer;
     private boolean usb;
 
-    public CashDrawer(String id, @Nullable String port, @Nullable String printer, boolean usb) {
+    public CashDrawer(String id, @Nullable String port, Printer printer, boolean usb) {
         this.id = id;
         this.port = port;
         this.printer = printer;
@@ -33,9 +36,8 @@ public class CashDrawer {
     public String getPort() {
         return port;
     }
-
-    @Nullable
-    public String getPrinter() {
+    
+    public Printer getPrinter() {
         return printer;
     }
 

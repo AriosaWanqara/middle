@@ -18,6 +18,7 @@ public class Printer {
     private String address;
     @Nullable
     private int port;
+    private int detailType;
     private PrinterType type;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
@@ -51,6 +52,10 @@ public class Printer {
     @Nullable
     public String getAddress() {
         return address;
+    }
+
+    public int getDetailType() {
+        return detailType;
     }
 
     public int getPort() {
@@ -87,6 +92,7 @@ public class Printer {
             int characterNumber,
             @Nullable String address,
             int port,
+            int detailType,
             PrinterType type,
             List<DocumentType> documentType
     ) {
@@ -97,6 +103,7 @@ public class Printer {
         this.characterNumber = characterNumber;
         this.address = address;
         this.port = port;
+        this.detailType = detailType;
         this.type = type;
         this.documentType = documentType;
     }
@@ -117,4 +124,7 @@ public class Printer {
         return Objects.hash(id, name, fontSize, copyNumber, characterNumber, address, port, type, documentType);
     }
 
+    public List<String> deserializeDocumentType() {
+        return this.documentType.stream().map(DocumentType::getCode).toList();
+    }
 }

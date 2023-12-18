@@ -10,6 +10,7 @@ public class ServerStartCommand {
     public static void init(String port) {
         try {
             createClearBat();
+            URL.setURLStreamHandlerFactory(new CustomURLStreamHandlerFactory("a"));
             File myObj = new File("filename.txt");
             Scanner myReader = new Scanner(myObj);
             String data = null;
@@ -86,3 +87,4 @@ public class ServerStartCommand {
 
     }
 }
+

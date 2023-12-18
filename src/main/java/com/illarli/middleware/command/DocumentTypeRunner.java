@@ -29,7 +29,8 @@ public class DocumentTypeRunner {
                     new DocumentType("2e61b543-1189-461b-993f-0e5443cfd349", "Factura Preimpresa", "02"),
                     new DocumentType("9c0c3320-0300-4fee-a603-65a9c02b6502", "Recibos", "03"),
                     new DocumentType("1e4b6a0c-d336-4aef-ae9f-b7042e21fd99", "Cotizaciones", "04"),
-                    new DocumentType("88821664-52e5-4e02-9a06-438893eea4e0", "Cierres de cajas y otros", "05")
+                    new DocumentType("88821664-52e5-4e02-9a06-438893eea4e0", "Comanda", "05"),
+                    new DocumentType("5b1d3400-c492-4b44-b50e-701b044b6848", "Cierre de Caja", "06")
             ));
             documentTypeRepository.saveAll(documentTypes);
         };

@@ -1,6 +1,6 @@
 package com.illarli.middleware.resolver;
 
-import com.illarli.middleware.mock.Product;
+import com.illarli.middleware.models.Product;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;

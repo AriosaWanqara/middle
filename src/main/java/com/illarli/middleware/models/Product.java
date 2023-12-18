@@ -1,12 +1,24 @@
-package com.illarli.middleware.mock;
+package com.illarli.middleware.models;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String name;
     private Integer quantity;
     private Double price;
+
+    protected Product() {
+    }
 
     public Product(String name, Integer quantity, Double price) {
         this.name = name;
@@ -14,7 +26,8 @@ public class Product {
         this.price = price;
     }
 
-    public Product() {
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

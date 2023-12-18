@@ -24,6 +24,7 @@ public class PrinterDTO {
     private int characterNumber;
     private String address;
     private int port;
+    private int detailsType = 1;
     @NotNull(message = "The type field is required")
     private PrinterType type;
     @NotEmpty(message = "The id documentType is required")
@@ -37,6 +38,7 @@ public class PrinterDTO {
             int characterNumber,
             String address,
             int port,
+            int detailsType,
             PrinterType type,
             List<String> documentType
     ) {
@@ -47,6 +49,7 @@ public class PrinterDTO {
         this.characterNumber = characterNumber;
         this.address = address;
         this.port = port;
+        this.detailsType = detailsType;
         this.type = type;
         this.documentType = documentType;
     }
@@ -67,6 +70,7 @@ public class PrinterDTO {
                 this.characterNumber,
                 this.address,
                 this.port,
+                this.detailsType,
                 this.type,
                 documentTypes
         );

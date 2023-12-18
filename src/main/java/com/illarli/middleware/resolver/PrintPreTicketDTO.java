@@ -1,12 +1,12 @@
 package com.illarli.middleware.resolver;
 
-import com.illarli.middleware.mock.Product;
+import com.illarli.middleware.models.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class PrintPreTicketDTO {
     @NotNull(message = "The businessName RUC is required")
@@ -100,5 +100,72 @@ public class PrintPreTicketDTO {
 
     public List<Product> getProducts() {
         return products;
+    }
+
+    public PrinterSpooler createPrinterSpooler() {
+        List<Details> spoolerDetails = new ArrayList<>(List.of());
+        List<Details> spoolerPaymentMethods = new ArrayList<>(List.of());
+        Client client = new Client(null, null, null, null);
+        Company company = new Company(
+                this.businessName,
+                this.commercialName,
+                this.companyRUC,
+                this.forceAccounting,
+                this.companyAddress,
+                this.subsidiaryAddress,
+                null,
+                null,
+                false,
+                false,
+                null
+        );
+        this.details.forEach((key, value) -> {
+            spoolerDetails.add(new Details(key, value));
+        });
+        this.details.forEach((key, value) -> {
+            spoolerPaymentMethods.add(new Details(key, value));
+        });
+        return new PrinterSpooler(
+                UUID.randomUUID().toString(),
+                this.employee,
+                getDateString(),
+                String.valueOf(this.deliveryNumber),
+                "02",
+                null,
+                this.sellType,
+                spoolerDetails,
+                spoolerPaymentMethods,
+                client,
+                this.getProducts(),
+                company
+        );
+    }
+
+    private static String getDateString() {
+        Date utilDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        return sdf.format(utilDate);
+    }
+
+    public static PrintPreTicketDTO serializer(PrinterSpooler printerSpooler) {
+        Company company = printerSpooler.getCompany();
+        Client client = printerSpooler.getClient();
+        Map<String, Double> details = new HashMap<>();
+        printerSpooler.getDetails().forEach(it -> {
+            details.put(it.getKeyName(), it.getKeyValue());
+        });
+        return new PrintPreTicketDTO(
+                company.getBusinessName(),
+                company.getCommercialName(),
+                company.getCompanyAddress(),
+                company.getSubsidiaryAddress(),
+                company.getRUC(),
+                company.isForceAccounting(),
+                printerSpooler.getExtraData(),
+                printerSpooler.getEmployee(),
+                Integer.getInteger(printerSpooler.getCode()),
+                printerSpooler.getProducts(),
+                details
+        );
     }
 }

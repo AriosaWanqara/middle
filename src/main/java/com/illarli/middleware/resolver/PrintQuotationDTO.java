@@ -1,11 +1,11 @@
 package com.illarli.middleware.resolver;
 
-import com.illarli.middleware.mock.Product;
+import com.illarli.middleware.models.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class PrintQuotationDTO {
 
@@ -123,5 +123,93 @@ public class PrintQuotationDTO {
 
     public List<Product> getProducts() {
         return products;
+    }
+
+    public PrinterSpooler createPrinterSpooler() {
+        List<Details> spoolerDetails = new ArrayList<>(List.of());
+        List<Details> spoolerPaymentMethods = new ArrayList<>(List.of());
+        Client client = new Client(this.clientName, this.clientRUC, this.getClientPhone(), this.getClientAddress());
+        Company company = new Company(
+                this.businessName,
+                this.commercialName,
+                this.companyRUC,
+                this.forceAccounting,
+                this.companyAddress,
+                this.subsidiaryAddress,
+                null,
+                this.companyEmail,
+                false,
+                false,
+                null
+        );
+        this.details.forEach((key, value) -> {
+            spoolerDetails.add(new Details(key, value));
+        });
+        this.details.forEach((key, value) -> {
+            spoolerPaymentMethods.add(new Details(key, value));
+        });
+
+        return new PrinterSpooler(
+                UUID.randomUUID().toString(),
+                null,
+                getDateString(),
+                this.transactionNumber,
+                "04",
+                null,
+                null,
+                spoolerDetails,
+                spoolerPaymentMethods,
+                client,
+                this.getProducts(),
+                company
+        );
+    }
+
+    private static String getDateString() {
+        Date utilDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        return sdf.format(utilDate);
+    }
+
+    public static PrintQuotationDTO serializer(PrinterSpooler printerSpooler) {
+        Company company = printerSpooler.getCompany();
+        Client client = printerSpooler.getClient();
+        Map<String, Double> details = new HashMap<>();
+        return new PrintQuotationDTO(
+                company.getBusinessName(),
+                company.getCommercialName(),
+                company.getRUC(),
+                company.isForceAccounting(),
+                company.getCompanyEmail(),
+                company.getCompanyAddress(),
+                company.getSubsidiaryAddress(),
+                printerSpooler.getCode(),
+                client.getClientName(),
+                client.getDNI(),
+                client.getClientPhone(),
+                client.getClientAddress(),
+                details,
+                printerSpooler.getProducts()
+        );
+    }
+
+    @Override
+    public String toString() {
+        return "PrintQuotationDTO{" +
+                "businessName='" + businessName + '\'' +
+                ", commercialName='" + commercialName + '\'' +
+                ", companyRUC='" + companyRUC + '\'' +
+                ", forceAccounting=" + forceAccounting +
+                ", companyEmail='" + companyEmail + '\'' +
+                ", companyAddress='" + companyAddress + '\'' +
+                ", subsidiaryAddress='" + subsidiaryAddress + '\'' +
+                ", transactionNumber='" + transactionNumber + '\'' +
+                ", clientName='" + clientName + '\'' +
+                ", clientRUC='" + clientRUC + '\'' +
+                ", clientPhone='" + clientPhone + '\'' +
+                ", clientAddress='" + clientAddress + '\'' +
+                ", details=" + details +
+                ", products=" + products +
+                '}';
     }
 }

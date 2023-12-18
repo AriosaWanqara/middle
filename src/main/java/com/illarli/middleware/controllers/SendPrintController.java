@@ -2,14 +2,17 @@ package com.illarli.middleware.controllers;
 
 import com.illarli.middleware.infrastructure.print.EscPosCoffee;
 import com.illarli.middleware.models.Printer;
+import com.illarli.middleware.models.PrinterSpooler;
 import com.illarli.middleware.resolver.*;
 import com.illarli.middleware.service.PrinterService;
+import com.illarli.middleware.service.PrinterSpoolerService;
 import com.illarli.middleware.service.SendPrintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -19,6 +22,8 @@ public class SendPrintController {
 
     @Autowired
     private PrinterService printerService;
+    @Autowired
+    private PrinterSpoolerService printerSpoolerService;
 
     @PostMapping("/test")
     public ResponseEntity<?> test(@RequestBody Printer printer) {
@@ -115,7 +120,9 @@ public class SendPrintController {
     public ResponseEntity<?> printQuotation(@Valid @RequestBody PrintQuotationDTO quotation, @PathVariable String code) {
         Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
         if (printer.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            PrinterSpooler printerSpooler = quotation.createPrinterSpooler();
+            printerSpoolerService.save(printerSpooler);
+            return new ResponseEntity<>("Printer not found", HttpStatus.CONFLICT);
         }
         System.out.println("Force Accounting: " + quotation.isForceAccounting());
         EscPosCoffee escPosCoffee = new EscPosCoffee(printer.get());
@@ -145,7 +152,9 @@ public class SendPrintController {
     public ResponseEntity<?> printCommand(@Valid @RequestBody PrintCommandDTO command, @PathVariable String code) {
         Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
         if (printer.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            PrinterSpooler printerSpooler = command.createPrinterSpooler();
+            printerSpoolerService.save(printerSpooler);
+            return new ResponseEntity<>("Printer not found", HttpStatus.CONFLICT);
         }
         System.out.println(printer.get().toString());
         EscPosCoffee escPosCoffee = new EscPosCoffee(printer.get());
@@ -157,16 +166,18 @@ public class SendPrintController {
     }
 
     @PostMapping("/print-electronic/{code}")
-    public ResponseEntity<?> printElectronicInvoice(@Valid @RequestBody PrintElectronicInvoiceDTO electronicInvoice, @PathVariable String code) {
+    public ResponseEntity<?> printElectronicInvoice(@Valid @RequestBody PrintElectronicInvoiceDTO electronicInvoice, @PathVariable String code, HttpServletResponse response) {
         Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
         if (printer.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            PrinterSpooler printerSpooler = electronicInvoice.createPrinterSpooler();
+            printerSpoolerService.save(printerSpooler);
+            return new ResponseEntity<>("Printer not found", HttpStatus.CONFLICT);
         }
         System.out.println(printer.get().toString());
         EscPosCoffee escPosCoffee = new EscPosCoffee(printer.get());
         SendPrintService sendPrintService = new SendPrintService(escPosCoffee);
         if (sendPrintService.electronicInvoice(electronicInvoice)) {
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>("OKIII", HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -175,7 +186,9 @@ public class SendPrintController {
     public ResponseEntity<?> printPreTicket(@Valid @RequestBody PrintPreTicketDTO preTicket, @PathVariable String code) {
         Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
         if (printer.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            PrinterSpooler printerSpooler = preTicket.createPrinterSpooler();
+            printerSpoolerService.save(printerSpooler);
+            return new ResponseEntity<>("Printer not found", HttpStatus.CONFLICT);
         }
         System.out.println(printer.get().toString());
         EscPosCoffee escPosCoffee = new EscPosCoffee(printer.get());
@@ -190,7 +203,9 @@ public class SendPrintController {
     public ResponseEntity<?> printVoucher(@Valid @RequestBody PrintVoucherDTO voucher, @PathVariable String code) {
         Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(code);
         if (printer.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            PrinterSpooler printerSpooler = voucher.createPrinterSpooler();
+            printerSpoolerService.save(printerSpooler);
+            return new ResponseEntity<>("Printer not found", HttpStatus.CONFLICT);
         }
         System.out.println(voucher.toString());
         EscPosCoffee escPosCoffee = new EscPosCoffee(printer.get());
