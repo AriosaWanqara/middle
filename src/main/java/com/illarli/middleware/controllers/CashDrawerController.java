@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -20,7 +19,7 @@ public class CashDrawerController {
     private CashDrawerService cashDrawerService;
 
     @GetMapping("")
-    public ResponseEntity<List<CashDrawer>> index() {
+    public ResponseEntity<?> index() {
         return new ResponseEntity<>(cashDrawerService.getAll(), HttpStatus.OK);
     }
 

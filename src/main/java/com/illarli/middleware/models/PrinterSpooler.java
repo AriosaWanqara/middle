@@ -143,9 +143,6 @@ public class PrinterSpooler {
             case "05" -> {
                 escPosCoffee.printCommand(PrintCommandDTO.serializer(this));
             }
-            case "06" -> {
-//                 PrintCashDrawerCloseDetailDTO;
-            }
         }
     }
 }
