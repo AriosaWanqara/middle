@@ -1,9 +1,7 @@
 package com.illarli.middleware.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Balance {
@@ -12,7 +10,7 @@ public class Balance {
     private String port;
     private String name;
     private int getWeightTimer;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "balanceType", referencedColumnName = "id")
     private BalanceType balanceType;
 
@@ -45,5 +43,18 @@ public class Balance {
 
     public BalanceType getBalanceType() {
         return balanceType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Balance balance = (Balance) o;
+        return getWeightTimer == balance.getWeightTimer && Objects.equals(id, balance.id) && Objects.equals(port, balance.port) && Objects.equals(name, balance.name) && Objects.equals(balanceType, balance.balanceType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, port, name, getWeightTimer, balanceType);
     }
 }

@@ -20,8 +20,8 @@ public class MiddlewareApplication {
             System.setProperty("server.port", puerto);
             SpringApplication.run(MiddlewareApplication.class, args);
         } catch (Exception e) {
-            System.out.println(e);
-            System.err.println("Ocurrió un error: " + e);
+            System.out.println(e.getMessage());
+            System.err.println("Ocurrió un error: " + e.getMessage());
             System.exit(1);
         }
     }
