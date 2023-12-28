@@ -32,7 +32,7 @@ public class SendPrintController {
         if (sendPrintService.printTest()) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/list")
@@ -54,7 +54,7 @@ public class SendPrintController {
         if (sendPrintService.printText(text)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/print-media/{id}")
@@ -69,7 +69,7 @@ public class SendPrintController {
         if (sendPrintService.printMedia(media)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/print-title/{id}")
@@ -84,7 +84,7 @@ public class SendPrintController {
         if (sendPrintService.printTitle(title)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/cut/{id}")
@@ -99,7 +99,7 @@ public class SendPrintController {
         if (sendPrintService.cut()) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/print-quotation/{code}")
@@ -116,7 +116,7 @@ public class SendPrintController {
         if (sendPrintService.quotation(quotation)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/print-cash-drawer/{code}")
@@ -131,7 +131,7 @@ public class SendPrintController {
         if (sendPrintService.cashDrawerDetail(cashDrawerDetail)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/print-command/{code}")
@@ -148,7 +148,7 @@ public class SendPrintController {
         if (sendPrintService.command(command)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/print-electronic/{code}")
@@ -165,7 +165,7 @@ public class SendPrintController {
         if (sendPrintService.electronicInvoice(electronicInvoice)) {
             return new ResponseEntity<>("OKIII", HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/print-pre-ticket/{code}")
@@ -182,7 +182,7 @@ public class SendPrintController {
         if (sendPrintService.preTicket(preTicket)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/print-voucher/{code}")
@@ -199,6 +199,6 @@ public class SendPrintController {
         if (sendPrintService.voucher(voucher)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
