@@ -44,9 +44,9 @@ public class SendPrintController {
 
     @PostMapping("/print-text/{id}")
     public ResponseEntity<?> printText(@Valid @RequestBody PrintTextDTO text, @PathVariable String id) {
-        Optional<Printer> printer = this.printerService.getPrinterById(id);
+        Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(id);
         if (printer.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Printer not found", HttpStatus.CONFLICT);
         }
         System.out.println(printer.get().toString());
         EscPosCoffee escPosCoffee = new EscPosCoffee(printer.get());
@@ -59,9 +59,9 @@ public class SendPrintController {
 
     @PostMapping("/print-media/{id}")
     public ResponseEntity<?> printMedia(@Valid @RequestBody PrintMediaDTO media, @PathVariable String id) {
-        Optional<Printer> printer = this.printerService.getPrinterById(id);
+        Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(id);
         if (printer.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Printer not found", HttpStatus.CONFLICT);
         }
         System.out.println(printer.get().toString());
         EscPosCoffee escPosCoffee = new EscPosCoffee(printer.get());
@@ -74,9 +74,9 @@ public class SendPrintController {
 
     @PostMapping("/print-title/{id}")
     public ResponseEntity<?> printTitle(@Valid @RequestBody PrintTitleDTO title, @PathVariable String id) {
-        Optional<Printer> printer = this.printerService.getPrinterById(id);
+        Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(id);
         if (printer.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Printer not found", HttpStatus.CONFLICT);
         }
         System.out.println(printer.get().toString());
         EscPosCoffee escPosCoffee = new EscPosCoffee(printer.get());
@@ -89,9 +89,9 @@ public class SendPrintController {
 
     @PostMapping("/cut/{id}")
     public ResponseEntity<?> cut(@PathVariable String id) {
-        Optional<Printer> printer = this.printerService.getPrinterById(id);
+        Optional<Printer> printer = this.printerService.getPrinterByDocumentTypeCode(id);
         if (printer.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Printer not found", HttpStatus.CONFLICT);
         }
         System.out.println(printer.get().toString());
         EscPosCoffee escPosCoffee = new EscPosCoffee(printer.get());

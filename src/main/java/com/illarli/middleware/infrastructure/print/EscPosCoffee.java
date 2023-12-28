@@ -114,6 +114,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             EscPos escPos = new EscPos(this.outputStream);
             escPos.feed(2);
             escPos.cut(EscPos.CutMode.FULL);
+            escPos.close();
             return true;
         } catch (Exception e) {
             return false;
@@ -723,10 +724,10 @@ public class EscPosCoffee implements PrinterLibraryRepository {
     private void printQRCode(EscPos escpos, String QRCodeMessage, String justification) {
         try {
             QRCode qrcode = new QRCode();
-            qrcode.setJustification(setJustification(justification));
-            escpos.feed(1);
+            qrcode.setJustification(setJustification(justification)).setSize(6);
+            escpos.feed(2);
             escpos.write(qrcode, QRCodeMessage);
-            escpos.feed(1);
+            escpos.feed(2);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

@@ -21,7 +21,7 @@ public class Printer {
     private int detailType;
     private PrinterType type;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(name = "document_printer", joinColumns = @JoinColumn(
             name = "printerId", referencedColumnName = "id"
     ), inverseJoinColumns = @JoinColumn(

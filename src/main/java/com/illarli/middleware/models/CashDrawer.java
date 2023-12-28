@@ -1,5 +1,7 @@
 package com.illarli.middleware.models;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
@@ -14,6 +16,7 @@ public class CashDrawer {
     @Nullable
     private String port;
     @ManyToOne()
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "printer_id", nullable = false)
     private Printer printer;
     private boolean usb;
