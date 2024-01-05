@@ -28,4 +28,6 @@ public interface PrinterLibraryRepository {
     boolean printVoucher(PrintVoucherDTO voucher);
 
     boolean printCashDrawerCloseDetail(PrintCashDrawerCloseDetailDTO cashDrawerCloseDetail);
+
+    boolean printFlyer(PrintFlyersDTO printFlyersDTO);
 }

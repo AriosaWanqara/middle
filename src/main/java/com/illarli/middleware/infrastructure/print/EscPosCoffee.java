@@ -16,6 +16,7 @@ import com.illarli.middleware.utils.PrintDetails;
 
 import javax.imageio.ImageIO;
 import javax.print.PrintService;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.*;
 
 public class EscPosCoffee implements PrinterLibraryRepository {
@@ -199,9 +201,10 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             EscPos escPos = new EscPos(this.outputStream);
             Style titleStile = new Style()
                     .setJustification(EscPosConst.Justification.Center)
-                    .setFontSize(Style.FontSize._1, Style.FontSize._1);
+                    .setFontSize(setWidth(), setHeight());
             Style bodyStyle = new Style()
-                    .setFontName(setFontName());
+                    .setFontName(setFontName())
+                    .setFontSize(setWidth(), setHeight());
 
             escPos.writeLF(titleStile, "Cotización");
 
@@ -244,7 +247,6 @@ public class EscPosCoffee implements PrinterLibraryRepository {
         }
     }
 
-
     @Override
     public boolean printPreTicket(PrintPreTicketDTO preTicket) {
         try {
@@ -254,7 +256,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
                     .setFontSize(Style.FontSize._1, Style.FontSize._2)
                     .setJustification(EscPosConst.Justification.Center);
             Style bodyStyle = new Style()
-                    .setFontName(setFontName());
+                    .setFontName(setFontName())
+                    .setFontSize(setWidth(), setHeight());
 
             escPos.writeLF(titleStyle, "Preticket");
             escPos.feed(2);
@@ -354,9 +357,11 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             Style titleStyle = new Style()
                     .setJustification(EscPosConst.Justification.Center)
-                    .setFontSize(Style.FontSize._1, Style.FontSize._1);
+                    .setFontSize(setWidth(), setHeight());
             Style bodyStyle = new Style()
-                    .setFontName(setFontName());
+                    .setFontName(setFontName())
+                    .setFontSize(setWidth(), setHeight());
+
             escPos.writeLF(titleStyle, "PEDIDO " + command.getDeliveryNumber());
             escPos.writeLF(titleStyle, command.getZoneName());
 
@@ -421,7 +426,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
                     .setJustification(EscPosConst.Justification.Center)
                     .setFontSize(Style.FontSize._1, Style.FontSize._2);
             Style bodyStyle = new Style()
-                    .setFontName(setFontName());
+                    .setFontName(setFontName())
+                    .setFontSize(setWidth(), setHeight());
 
             escPos.writeLF(titleStyle, "FACTURA ELECTRONICA NO:");
             escPos.writeLF(titleStyle, electronicInvoice.getTransactionNumber());
@@ -496,6 +502,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             EscPos escPos = new EscPos(outputStream);
 
             Style bodyStyle = new Style()
+                    .setFontSize(setWidth(), setHeight())
                     .setFontName(setFontName());
 
             escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Center), voucher.getBusinessName());
@@ -557,9 +564,10 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             Style titleStyle = new Style()
                     .setJustification(EscPosConst.Justification.Center)
-                    .setFontSize(Style.FontSize._1, Style.FontSize._1);
+                    .setFontSize(setWidth(), setHeight());
             Style bodyStyle = new Style()
-                    .setFontName(setFontName());
+                    .setFontName(setFontName())
+                    .setFontSize(setWidth(), setHeight());
 
             escPos.writeLF(titleStyle, "Cierre de Caja");
             escPos.writeLF(titleStyle, "No: " + cashDrawerCloseDetail.getCloseCashDrawerNumber());
@@ -633,11 +641,35 @@ public class EscPosCoffee implements PrinterLibraryRepository {
         }
     }
 
+    @Override
+    public boolean printFlyer(PrintFlyersDTO printFlyersDTO) {
+        try {
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private Style.FontName setFontName() {
         if (this.printer.getFontSize().equals("A")) {
             return Style.FontName.Font_A_Default;
         }
         return Style.FontName.Font_B;
+    }
+
+    private Style.FontSize setWidth() {
+        if (this.printer.getFontSize().equals("W")) {
+            return Style.FontSize._2;
+        }
+        return Style.FontSize._1;
+
+    }
+
+    private Style.FontSize setHeight() {
+        if (this.printer.getFontSize().equals("H")) {
+            return Style.FontSize._2;
+        }
+        return Style.FontSize._1;
     }
 
     private Style.FontSize setFontSize(String size) {
@@ -738,7 +770,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             URL url = new URL(imageUrl);
             BufferedImage bufferedImage = ImageIO.read(url);
 
-            CoffeeImage coffeeImage = new CoffeeImageImpl(bufferedImage);
+            CoffeeImage coffeeImage = new CoffeeImageImpl(resize(bufferedImage, 100, 100));
             Bitonal algorithm = new BitonalOrderedDither();
             RasterBitImageWrapper imageWrapper = new RasterBitImageWrapper();
             imageWrapper.setJustification(setJustification(justification));
@@ -756,7 +788,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             File file = new File(fileUrl);
             BufferedImage bufferedImage = ImageIO.read(file);
 
-            CoffeeImage coffeeImage = new CoffeeImageImpl(bufferedImage);
+            CoffeeImage coffeeImage = new CoffeeImageImpl(resize(bufferedImage, 100, 100));
             Bitonal algorithm = new BitonalOrderedDither();
             RasterBitImageWrapper imageWrapper = new RasterBitImageWrapper();
             imageWrapper.setJustification(setJustification(justification));
@@ -767,5 +799,16 @@ public class EscPosCoffee implements PrinterLibraryRepository {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private static BufferedImage resize(BufferedImage img, int newW, int newH) {
+        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2d = dimg.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+
+        return dimg;
     }
 }
