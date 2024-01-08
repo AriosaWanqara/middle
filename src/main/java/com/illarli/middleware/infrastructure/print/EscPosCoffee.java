@@ -86,6 +86,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
                     .setJustification(EscPosConst.Justification.Center);
 
             Style bodyStyle = new Style()
+                    .setFontSize(setWidth(), setHeight())
                     .setFontName(setFontName());
 
             String[] characters = new String[11];
@@ -651,10 +652,10 @@ public class EscPosCoffee implements PrinterLibraryRepository {
     }
 
     private Style.FontName setFontName() {
-        if (this.printer.getFontSize().equals("A")) {
-            return Style.FontName.Font_A_Default;
+        if (this.printer.getFontSize().equals("B")) {
+            return Style.FontName.Font_B;
         }
-        return Style.FontName.Font_B;
+        return Style.FontName.Font_A_Default;
     }
 
     private Style.FontSize setWidth() {

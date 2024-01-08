@@ -15,7 +15,7 @@ public class PrinterDTO {
     @NotBlank(message = "The name field is required")
     private String name;
     @NotBlank(message = "The font size field is required")
-    @Pattern(regexp = "^[AB]+", message = "The field font size should be A or B")
+    @Pattern(regexp = "^[ABWH]+", message = "The field font size should be A or B")
     @Size(min = 1, max = 1, message = "The field font size should have 1 character")
     private String fontSize;
     @Min(value = 1, message = "The copyNumber field is required")
@@ -24,8 +24,8 @@ public class PrinterDTO {
     private int characterNumber;
     private String address;
     private int port;
-    @Min(value = 1, message = "Min value is 1")
-    @Max(value = 3, message = "Max value is 3")
+    @Min(value = 1, message = "The detail type min value is 1")
+    @Max(value = 3, message = "The detail type max value is 3")
     private int detailsType;
     @NotNull(message = "The type field is required")
     private PrinterType type;
