@@ -1,6 +1,9 @@
 package com.illarli.middleware.models;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.Objects;
 
 @Entity
@@ -10,7 +13,7 @@ public class Balance {
     private String port;
     private String name;
     private int getWeightTimer;
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne()
     @JoinColumn(name = "balanceType", referencedColumnName = "id")
     private BalanceType balanceType;
 

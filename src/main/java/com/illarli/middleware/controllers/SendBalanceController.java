@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/send-balance")
@@ -37,6 +39,11 @@ public class SendBalanceController {
         List<Balance> balances = this.balanceService.getAll();
         if (!balances.isEmpty()) {
             Balance balance = balances.get(0);
+            if (balance.getGetWeightTimer() > 0) {
+                CompletableFuture.delayedExecutor(balance.getGetWeightTimer(), TimeUnit.SECONDS).execute(() -> {
+                    JSerialComm.flag = false;
+                });
+            }
             jSerialComm.open(s -> {
                 messagingTemplate.convertAndSend("/printer-ws/balance-reader", s);
                 return s;

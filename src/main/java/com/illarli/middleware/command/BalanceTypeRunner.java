@@ -23,7 +23,6 @@ public class BalanceTypeRunner {
     @Bean
     CommandLineRunner balanceTypeSeder() {
         return args -> {
-            balanceTypeRepository.deleteAll();
             ArrayList<BalanceType> balanceTypes = new ArrayList<>(List.of(
                     new BalanceType("4fd25d8c-cb94-4743-a6a8-1f4e6e8c7e8d", "CAS PDN", 9600, 8, 1, 0, new byte[]{0x05, 0x11}),
                     new BalanceType("c5d4f149-8dec-4479-9248-74024e3b52aa", "CAS CL 5200", 9600, 8, 1, 0, new byte[]{0x52, 0x34, 0x35, 0x46, 0x30, 0x34, 0x2C, 0x30, 0x30, 0x0A})
