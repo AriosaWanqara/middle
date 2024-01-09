@@ -22,7 +22,7 @@ public class PrintDetails {
 
     public PrintDetails(Printer printer) {
         this.printer = printer;
-        bodyStyle.setFontName(setFontName());
+        bodyStyle.setFontName(setFontName()).setFontSize(setWidth(), setHeight());
     }
 
     public void printDetail(EscPos escPos, List<Product> products) {
@@ -43,8 +43,9 @@ public class PrintDetails {
         try {
             String HeaderLeft = "Cant Descripcion";
             String HeaderRight = "P.U.  Total";
-
-            String[] HeaderWitheSpace = new String[this.printer.getCharacterNumber() - HeaderLeft.length() - HeaderRight.length()];
+            int witheSpaceNumber = this.printer.getCharacterNumber() - HeaderLeft.length() - HeaderRight.length();
+            if (witheSpaceNumber < 0) witheSpaceNumber = 0;
+            String[] HeaderWitheSpace = new String[witheSpaceNumber];
 
             Arrays.fill(HeaderWitheSpace, " ");
 
@@ -119,10 +120,24 @@ public class PrintDetails {
     }
 
     private Style.FontName setFontName() {
-        if (this.printer.getFontSize().equals("A")) {
-            return Style.FontName.Font_A_Default;
+        if (this.printer.getFontSize().equals("B")) {
+            return Style.FontName.Font_B;
         }
-        return Style.FontName.Font_B;
+        return Style.FontName.Font_A_Default;
+    }
+
+    private Style.FontSize setWidth() {
+        if (this.printer.getFontSize().equals("W")) {
+            return Style.FontSize._2;
+        }
+        return Style.FontSize._1;
+    }
+
+    private Style.FontSize setHeight() {
+        if (this.printer.getFontSize().equals("H")) {
+            return Style.FontSize._2;
+        }
+        return Style.FontSize._1;
     }
 
     private String makeWitheSpace(int size) {
