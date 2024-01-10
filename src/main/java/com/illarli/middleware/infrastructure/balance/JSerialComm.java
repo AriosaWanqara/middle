@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
+
 public class JSerialComm implements BalanceLibraryRepository {
     public static boolean flag = false;
 
@@ -55,7 +56,14 @@ public class JSerialComm implements BalanceLibraryRepository {
                         Thread.sleep(500);
                     }
                 } catch (Exception e) {
-                    System.out.println(e);
+                    try {
+                        while (flag) {
+                            send.apply("Error lectura");
+                            Thread.sleep(500);
+                        }
+                    } catch (Exception ex) {
+                        System.out.println(ex.getMessage());
+                    }
                 }
                 MySerialPort.closePort();
             }
