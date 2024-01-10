@@ -27,6 +27,10 @@ public class BalanceType {
     protected BalanceType() {
     }
 
+    public String getName() {
+        return name;
+    }
+
     public String getId() {
         return this.id;
     }

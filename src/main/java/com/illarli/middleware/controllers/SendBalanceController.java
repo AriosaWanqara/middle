@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -32,30 +34,47 @@ public class SendBalanceController {
     }
 
     @MessageMapping("/active")
-    @SendTo("/printer-ws/balance-reader")
+    @SendTo("/balance/read")
     public void openBalanceWebSocket() {
         JSerialComm.flag = true;
         JSerialComm jSerialComm = new JSerialComm();
         List<Balance> balances = this.balanceService.getAll();
         if (!balances.isEmpty()) {
             Balance balance = balances.get(0);
+            Map<String, Object> response = new HashMap<>() {{
+                put("balance", balance);
+            }};
             if (balance.getGetWeightTimer() > 0) {
+                response.put("disconnectTime", balance.getGetWeightTimer());
                 CompletableFuture.delayedExecutor(balance.getGetWeightTimer(), TimeUnit.SECONDS).execute(() -> {
                     JSerialComm.flag = false;
                 });
             }
             jSerialComm.open(s -> {
-                messagingTemplate.convertAndSend("/printer-ws/balance-reader", s);
+                response.put("message", s);
+                messagingTemplate.convertAndSend("/balance/read", response);
                 return s;
             }, balance);
         }
-//        JSerialComm.flag = true;
-//        while (JSerialComm.flag) {
-//            try {
-//                messagingTemplate.convertAndSend("/printer-ws/balance-reader", "s");
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
+//        if (!balances.isEmpty()) {
+//            Balance balance = balances.get(0);
+//            while (JSerialComm.flag) {
+//                try {
+//                    Map<String, Object> response = new HashMap<>() {{
+//                        put("balance", balance);
+//                        put("message", "s");
+//                    }};
+//                    if (balance.getGetWeightTimer() > 0) {
+//                        response.put("disconnectTime", balance.getGetWeightTimer());
+//                        CompletableFuture.delayedExecutor(balance.getGetWeightTimer(), TimeUnit.SECONDS).execute(() -> {
+//                            JSerialComm.flag = false;
+//                        });
+//                    }
+//                    messagingTemplate.convertAndSend("/balance/read", response);
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
 //            }
 //        }
     }

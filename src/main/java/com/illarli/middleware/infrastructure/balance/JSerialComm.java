@@ -58,8 +58,15 @@ public class JSerialComm implements BalanceLibraryRepository {
                     System.out.println(e);
                 }
                 MySerialPort.closePort();
-            } else {
-                MySerialPort.closePort();
+            }
+        } else {
+            try {
+                while (flag) {
+                    send.apply("Balanza desconnectada");
+                    Thread.sleep(500);
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         }
     }
