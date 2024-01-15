@@ -33,7 +33,7 @@ public class BalanceController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> remove(@PathVariable String id) {
         if (balanceService.delete(id)) {
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>("The id " + id + " does not exist", HttpStatus.BAD_REQUEST);
     }

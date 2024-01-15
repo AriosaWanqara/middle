@@ -3,6 +3,8 @@ package com.illarli.middleware.infrastructure.balance;
 import com.fazecast.jSerialComm.SerialPort;
 import com.illarli.middleware.models.Balance;
 import com.illarli.middleware.models.repositories.BalanceLibraryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.function.Function;
 
 public class JSerialComm implements BalanceLibraryRepository {
     public static boolean flag = false;
+    private final Logger logger = LoggerFactory.getLogger(JSerialComm.class);
 
     @Override
     public List<String> getComList() {
@@ -56,6 +59,8 @@ public class JSerialComm implements BalanceLibraryRepository {
                         Thread.sleep(500);
                     }
                 } catch (Exception e) {
+                    logger.warn("Error leyendo balanza");
+                    logger.error(e.getMessage(), e);
                     try {
                         while (flag) {
                             send.apply("Error lectura");

@@ -13,6 +13,8 @@ import com.illarli.middleware.models.Product;
 import com.illarli.middleware.models.repositories.PrinterLibraryRepository;
 import com.illarli.middleware.resolver.*;
 import com.illarli.middleware.utils.PrintDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.print.PrintService;
@@ -32,6 +34,7 @@ public class EscPosCoffee implements PrinterLibraryRepository {
     private Printer printer;
     private OutputStream outputStream;
     private final DecimalFormat df = new DecimalFormat("####0.00");
+    private final Logger logger = LoggerFactory.getLogger(EscPosCoffee.class);
 
     public EscPosCoffee(Printer printer) {
         this.printer = printer;
@@ -71,7 +74,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escPos.close();
             return true;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.warn("Error abriendo gabeta");
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -107,6 +111,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             return true;
         } catch (Exception e) {
+            logger.warn("Error print test");
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -120,6 +126,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escPos.close();
             return true;
         } catch (Exception e) {
+            logger.warn("Error cut");
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -130,17 +138,14 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             EscPos escPos = new EscPos(this.outputStream);
             Style bodyStyle = new Style()
                     .setFontName(setFontName());
-            try {
-                for (String message : text.getMessages()) {
-                    escPos.writeLF(bodyStyle, message);
-                }
-                escPos.close();
-            } catch (IOException exception) {
-                return false;
+            for (String message : text.getMessages()) {
+                escPos.writeLF(bodyStyle, message);
             }
+            escPos.close();
             return true;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.warn("Error print text");
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -158,6 +163,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escPos.close();
             return true;
         } catch (Exception e) {
+            logger.warn("Error print title");
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -191,6 +198,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escPos.close();
             return true;
         } catch (Exception e) {
+            logger.warn("Error print media");
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -243,7 +252,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escPos.close();
             return true;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.warn("Error print quotation");
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -347,6 +357,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escPos.close();
             return true;
         } catch (Exception e) {
+            logger.warn("Error print pre ticket");
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -412,7 +424,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escPos.close();
             return true;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.warn("Error print command");
+            logger.error(e.getMessage(), e);
             return false;
         }
 
@@ -492,6 +505,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             return true;
         } catch (Exception e) {
+            logger.warn("Error print electronic invoice");
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -553,7 +568,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             return true;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.warn("Error print voucher");
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -637,7 +653,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
 
             return true;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.warn("Error print cash drawer details");
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -702,17 +719,22 @@ public class EscPosCoffee implements PrinterLibraryRepository {
     }
 
     private void makeDrawerProductDetails(EscPos escPos, Style bodyStyle, List<Product> mockProducts) throws IOException {
-        List<String> productDetails = new ArrayList<>(List.of());
-        for (Product mockProduct : mockProducts) {
-            String BodyLeft = mockProduct.getQuantity() + " " + mockProduct.getName();
-            String BodyRight = String.valueOf(mockProduct.getPrice());
-            String[] middleWitheSpace = new String[this.printer.getCharacterNumber() - BodyLeft.length() - BodyRight.length()];
-            Arrays.fill(middleWitheSpace, " ");
-            productDetails.add(BodyLeft + String.join("", middleWitheSpace) + BodyRight);
-        }
+        try {
+            List<String> productDetails = new ArrayList<>(List.of());
+            for (Product mockProduct : mockProducts) {
+                String BodyLeft = mockProduct.getQuantity() + " " + mockProduct.getName();
+                String BodyRight = String.valueOf(mockProduct.getPrice());
+                String[] middleWitheSpace = new String[this.printer.getCharacterNumber() - BodyLeft.length() - BodyRight.length()];
+                Arrays.fill(middleWitheSpace, " ");
+                productDetails.add(BodyLeft + String.join("", middleWitheSpace) + BodyRight);
+            }
 
-        for (String productDetail : productDetails) {
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), productDetail);
+            for (String productDetail : productDetails) {
+                escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), productDetail);
+            }
+        } catch (Exception e) {
+            logger.warn("Error make drawer product details");
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -723,22 +745,27 @@ public class EscPosCoffee implements PrinterLibraryRepository {
     }
 
     private void printDetails(EscPos escPos, Style bodyStyle, Map<String, Double> details) throws IOException {
-        List<String> detailsToPrint = new ArrayList<>(List.of());
-        details.forEach((s, aFloat) -> {
-            String[] detailsWitheSpace = new String[8];
-            Arrays.fill(detailsWitheSpace, " ");
-            String subtotalToString = new StringBuilder(this.df.format(aFloat)).reverse().toString();
-            for (int j = 0; j < 8; j++) {
-                if (subtotalToString.length() > j) {
-                    detailsWitheSpace[7 - j] = String.valueOf(subtotalToString.charAt(j));
-                } else {
-                    detailsWitheSpace[7 - j] = " ";
+        try {
+            List<String> detailsToPrint = new ArrayList<>(List.of());
+            details.forEach((s, aFloat) -> {
+                String[] detailsWitheSpace = new String[8];
+                Arrays.fill(detailsWitheSpace, " ");
+                String subtotalToString = new StringBuilder(this.df.format(aFloat)).reverse().toString();
+                for (int j = 0; j < 8; j++) {
+                    if (subtotalToString.length() > j) {
+                        detailsWitheSpace[7 - j] = String.valueOf(subtotalToString.charAt(j));
+                    } else {
+                        detailsWitheSpace[7 - j] = " ";
+                    }
                 }
+                detailsToPrint.add(s + ": " + String.join("", detailsWitheSpace));
+            });
+            for (String s : detailsToPrint) {
+                escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Right), s);
             }
-            detailsToPrint.add(s + ": " + String.join("", detailsWitheSpace));
-        });
-        for (String s : detailsToPrint) {
-            escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Right), s);
+        } catch (Exception e) {
+            logger.warn("Error print details");
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -750,7 +777,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escpos.write(barcode, barCodeMessage);
             escpos.feed(1);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.warn("Error print bar code");
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -762,7 +790,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escpos.write(qrcode, QRCodeMessage);
             escpos.feed(2);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.warn("Error print QR code");
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -780,7 +809,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escpos.write(imageWrapper, escposImage);
             escpos.feed(2);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.warn("Error print image from url");
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -798,7 +828,8 @@ public class EscPosCoffee implements PrinterLibraryRepository {
             escpos.write(imageWrapper, escposImage);
             escpos.feed(2);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.warn("Error print image from file");
+            logger.error(e.getMessage(), e);
         }
     }
 
