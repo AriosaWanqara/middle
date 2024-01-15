@@ -1,11 +1,15 @@
 package com.illarli.middleware.command;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
 public class ServerStartCommand {
+    private static final Logger logger = LoggerFactory.getLogger(ServerStartCommand.class);
 
     public static void init(String port) {
         try {
@@ -23,14 +27,16 @@ public class ServerStartCommand {
                 closeLastServer(url);
             }
         } catch (Exception e) {
-            System.out.println("An error occurred.");
+            logger.warn("Error init");
+            logger.error(e.getMessage(), e);
         } finally {
             try {
                 FileWriter myWriter = new FileWriter("filename.txt");
                 myWriter.write(port);
                 myWriter.close();
             } catch (IOException e) {
-                System.out.println(e);
+                logger.warn("Error writing port txt");
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -55,10 +61,9 @@ public class ServerStartCommand {
                     "del %systemroot%\\System32\\spool\\printers\\* /Q &\n" +
                     "net start spooler");
             myWriter.close();
-            System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+            logger.warn("Error writing clear");
+            logger.error(e.getMessage(), e);
         }
 
     }

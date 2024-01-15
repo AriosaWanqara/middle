@@ -5,6 +5,8 @@ import com.github.anastaciocintra.escpos.EscPosConst;
 import com.github.anastaciocintra.escpos.Style;
 import com.illarli.middleware.models.Printer;
 import com.illarli.middleware.models.Product;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ public class PrintDetails {
     private Printer printer;
     private final DecimalFormat df = new DecimalFormat("####0.00");
     Style bodyStyle = new Style();
+    private final Logger logger = LoggerFactory.getLogger(PrintDetails.class);
 
     private PrintDetails() {
     }
@@ -81,7 +84,8 @@ public class PrintDetails {
 
             escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), makeEqualsDivider());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.warn("Error print details type default");
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -111,7 +115,8 @@ public class PrintDetails {
 
             escPos.writeLF(bodyStyle.setJustification(EscPosConst.Justification.Left_Default), makeEqualsDivider());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.warn("Error print details type two");
+            logger.error(e.getMessage(), e);
         }
     }
 
