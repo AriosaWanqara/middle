@@ -15,7 +15,7 @@ public class ServerStartCommand {
         try {
             createClearBat();
             URL.setURLStreamHandlerFactory(new CustomURLStreamHandlerFactory("a"));
-            File myObj = new File("filename.txt");
+            File myObj = new File("port.txt");
             Scanner myReader = new Scanner(myObj);
             String data = null;
             while (myReader.hasNextLine()) {
@@ -69,27 +69,30 @@ public class ServerStartCommand {
     }
 
     private static void closeLastServer(URL obj) throws IOException {
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("GET");
-        con.setRequestProperty("User-Agent", "Mozilla/5.0");
-        int responseCode = con.getResponseCode();
-        System.out.println("GET Response Code :: " + responseCode);
-        if (responseCode == HttpURLConnection.HTTP_OK) { // success
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
+        try {
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("User-Agent", "Mozilla/5.0");
+            int responseCode = con.getResponseCode();
+            System.out.println("GET Response Code :: " + responseCode);
+            if (responseCode == HttpURLConnection.HTTP_OK) { // success
+                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
 
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                // print result
+                System.out.println(response.toString());
+            } else {
+                System.out.println("GET request did not work.");
             }
-            in.close();
+        } catch (Exception e) {
 
-            // print result
-            System.out.println(response.toString());
-        } else {
-            System.out.println("GET request did not work.");
         }
-
     }
 }
 
