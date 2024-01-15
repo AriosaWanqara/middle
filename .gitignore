@@ -37,3 +37,4 @@ out/
 .vscode/
 illarli-2.0/*
 *.log
+*.gz
