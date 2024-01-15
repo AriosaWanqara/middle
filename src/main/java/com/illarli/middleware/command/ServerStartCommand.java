@@ -14,6 +14,7 @@ public class ServerStartCommand {
     public static void init(String port) {
         try {
             createClearBat();
+            createClearBash();
             URL.setURLStreamHandlerFactory(new CustomURLStreamHandlerFactory("a"));
             File myObj = new File("port.txt");
             Scanner myReader = new Scanner(myObj);
@@ -62,7 +63,19 @@ public class ServerStartCommand {
                     "net start spooler");
             myWriter.close();
         } catch (IOException e) {
-            logger.warn("Error writing clear");
+            logger.warn("Error writing clear bat");
+            logger.error(e.getMessage(), e);
+        }
+
+    }
+
+    private static void createClearBash() {
+        try {
+            FileWriter myWriter = new FileWriter("clear.bash");
+            myWriter.write("ls");
+            myWriter.close();
+        } catch (IOException e) {
+            logger.warn("Error writing clear bash");
             logger.error(e.getMessage(), e);
         }
 
