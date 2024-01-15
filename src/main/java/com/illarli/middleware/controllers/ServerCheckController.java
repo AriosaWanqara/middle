@@ -29,7 +29,7 @@ public class ServerCheckController {
     @GetMapping("/logs")
     public String getLogs() {
         try {
-            Path logFile = Paths.get("mylog.log");
+            Path logFile = Paths.get("logger.log");
             return new String(Files.readAllBytes(logFile));
         } catch (Exception e) {
             logger.warn("Error getting logs");

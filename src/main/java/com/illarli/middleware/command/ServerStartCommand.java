@@ -31,7 +31,7 @@ public class ServerStartCommand {
             logger.error(e.getMessage(), e);
         } finally {
             try {
-                FileWriter myWriter = new FileWriter("filename.txt");
+                FileWriter myWriter = new FileWriter("port.txt");
                 myWriter.write(port);
                 myWriter.close();
             } catch (IOException e) {
