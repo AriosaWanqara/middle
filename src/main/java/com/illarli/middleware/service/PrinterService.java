@@ -3,6 +3,8 @@ package com.illarli.middleware.service;
 import com.illarli.middleware.infrastructure.repositories.PrinterRepository;
 import com.illarli.middleware.models.DocumentType;
 import com.illarli.middleware.models.Printer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ public class PrinterService {
 
     @Autowired
     private final PrinterRepository printerRepository;
+    private final Logger logger = LoggerFactory.getLogger(PrinterService.class);
 
     public PrinterService(PrinterRepository printerRepository) {
         this.printerRepository = printerRepository;
@@ -41,6 +44,8 @@ public class PrinterService {
             printerRepository.saveAll(printers);
             return true;
         } catch (Exception e) {
+            logger.warn("Error save printer");
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -64,6 +69,8 @@ public class PrinterService {
             printerRepository.deleteById(id);
             return true;
         } catch (Exception e) {
+            logger.warn("Error delete printer");
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
