@@ -2,7 +2,9 @@ package com.illarli.middleware.infrastructure.print;
 
 import com.illarli.middleware.models.TagPrinter;
 import com.illarli.middleware.models.repositories.ZPLLibraryRepository;
+import fr.w3blog.zpl.constant.ZebraFont;
 import fr.w3blog.zpl.model.ZebraLabel;
+import fr.w3blog.zpl.model.element.ZebraBarCode128;
 import fr.w3blog.zpl.model.element.ZebraBarCode39;
 import fr.w3blog.zpl.model.element.ZebraText;
 import fr.w3blog.zpl.utils.ZebraUtils;
@@ -17,12 +19,42 @@ public class ZebraZPL implements ZPLLibraryRepository {
     public ZebraZPL(int width, int height, TagPrinter printer) {
         this.zebraLabel = new ZebraLabel(width, height);
         this.printer = printer;
+        this.zebraLabel.setDefaultZebraFont(ZebraFont.ZEBRA_ZERO);
+    }
+
+    public ZebraZPL(TagPrinter printer) {
+        this.zebraLabel = new ZebraLabel();
+        this.printer = printer;
     }
 
     @Override
     public boolean print() {
         try {
             ZebraUtils.printZpl(this.zebraLabel, this.printer.getName());
+            return true;
+        } catch (Exception e) {
+            logger.warn("Error print zpl");
+            logger.error(e.getMessage(), e);
+            return false;
+        }
+    }
+
+    public boolean print(String zpl) {
+        try {
+            ZebraUtils.printZpl(zpl, this.printer.getName());
+            return true;
+        } catch (Exception e) {
+            logger.warn("Error print zpl");
+            logger.error(e.getMessage(), e);
+            return false;
+        }
+    }
+
+    public boolean print(String[] zplList) {
+        try {
+            for (String zpl : zplList) {
+                ZebraUtils.printZpl(zpl, this.printer.getName());
+            }
             return true;
         } catch (Exception e) {
             logger.warn("Error print zpl");
@@ -58,6 +90,10 @@ public class ZebraZPL implements ZPLLibraryRepository {
 
     @Override
     public void addBarCode(int positionX, int positionY, String text, int barCodeHeight, int barCodeWidth, int wideBarRatio) {
-        this.zebraLabel.addElement(new ZebraBarCode39(positionX, positionY, text, barCodeHeight, barCodeWidth, wideBarRatio));
+        this.zebraLabel.addElement(new ZebraBarCode128(positionX, positionY, text, barCodeHeight, barCodeWidth, wideBarRatio));
+    }
+
+    public ZebraLabel getZebraLabel() {
+        return zebraLabel;
     }
 }
