@@ -33,6 +33,7 @@ dependencies {
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'com.github.anastaciocintra:escpos-coffee:4.1.0'
+    implementation 'fr.w3blog:zebra-zpl:0.0.4'
     implementation 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
