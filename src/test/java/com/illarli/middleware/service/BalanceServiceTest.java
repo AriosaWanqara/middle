@@ -25,14 +25,14 @@ final class BalanceServiceTest {
     void test_should_balance_save_correctly() {
         Balance balance = BalanceMother.create();
         balanceRepository.save(balance);
-        Assertions.assertTrue(balanceRepository.findAll().size() > 0, "list is empty");
+        Assertions.assertFalse(balanceRepository.findAll().isEmpty(), "list is empty");
     }
 
     @Test
     void test_should_balance_delete() {
         Balance balance = BalanceMother.create();
         balanceRepository.save(balance);
-        Assertions.assertTrue(balanceRepository.findAll().size() > 0, "list is empty");
+        Assertions.assertFalse(balanceRepository.findAll().isEmpty(), "list is empty");
         balanceRepository.delete(balance);
         Assertions.assertTrue(balanceRepository.findAll().isEmpty(), "list is not empty");
     }

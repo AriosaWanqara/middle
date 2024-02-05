@@ -26,7 +26,7 @@ class PrinterSpoolerServiceTest {
     void test_printer_spooler_save_and_list_correctly() {
         PrinterSpooler printerSpooler = PrinterSpoolerMother.create(null);
         printerSpoolerRepository.save(printerSpooler);
-        Assertions.assertTrue(printerSpoolerRepository.findAll().size() > 0, "List is empty");
+        Assertions.assertFalse(printerSpoolerRepository.findAll().isEmpty(), "List is empty");
     }
 
     @Test
@@ -42,7 +42,7 @@ class PrinterSpoolerServiceTest {
             add("2");
         }};
         printerSpoolerRepository.deleteAllById(ids);
-        Assertions.assertTrue(printerSpoolerRepository.findAll().size() > 0, "List is empty");
+        Assertions.assertFalse(printerSpoolerRepository.findAll().isEmpty(), "List is empty");
         boolean check = printerSpoolerRepository.findAll().stream().noneMatch(printerSpooler1 -> {
             return ids.contains(printerSpooler1.getId());
         });

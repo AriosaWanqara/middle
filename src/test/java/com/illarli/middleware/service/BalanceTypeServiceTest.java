@@ -14,6 +14,6 @@ class BalanceTypeServiceTest {
 
     @Test
     void test_ensure_balance_type_list_is_not_empty() {
-        Assertions.assertTrue(balanceTypeRepository.findAll().size() > 0, "List is empty");
+        Assertions.assertFalse(balanceTypeRepository.findAll().isEmpty(), "List is empty");
     }
 }

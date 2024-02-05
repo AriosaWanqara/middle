@@ -23,6 +23,6 @@ class TagPrinterServiceTest {
     void test_tag_printer_is_save_and_list_correctly() {
         TagPrinter tagPrinter = TagPrinterMother.create();
         tagPrinterRepository.save(tagPrinter);
-        Assertions.assertTrue(tagPrinterRepository.findAll().size() > 0, "List is empty");
+        Assertions.assertFalse(tagPrinterRepository.findAll().isEmpty(), "List is empty");
     }
 }

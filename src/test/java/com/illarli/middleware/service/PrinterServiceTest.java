@@ -25,7 +25,7 @@ class PrinterServiceTest {
     void test_print_save_and_list_correctly() {
         Printer printer = PrinterMother.create(null);
         printerRepository.save(printer);
-        Assertions.assertTrue(printerRepository.findAll().size() > 0, "List is empty");
+        Assertions.assertFalse(printerRepository.findAll().isEmpty(), "List is empty");
     }
 
     @Test

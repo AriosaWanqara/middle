@@ -27,7 +27,7 @@ class CashDrawerServiceTest {
     void test_should_delete_correctly() {
         CashDrawer entity = CashDrawerMother.create();
         cashDrawerRepository.save(entity);
-        Assertions.assertTrue(cashDrawerRepository.findAll().size() > 0, "List is empty");
+        Assertions.assertFalse(cashDrawerRepository.findAll().isEmpty(), "List is empty");
         cashDrawerRepository.delete(entity);
         Assertions.assertTrue(cashDrawerRepository.findAll().isEmpty(), "List is not empty");
     }
@@ -36,6 +36,6 @@ class CashDrawerServiceTest {
     void test_should_save_and_list_correctly() {
         CashDrawer entity = CashDrawerMother.create();
         cashDrawerRepository.save(entity);
-        Assertions.assertTrue(cashDrawerRepository.findAll().size() > 0, "List is empty");
+        Assertions.assertFalse(cashDrawerRepository.findAll().isEmpty(), "List is empty");
     }
 }

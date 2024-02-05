@@ -13,6 +13,6 @@ class DocumentTypeServiceTest {
 
     @Test
     void test_document_type_is_not_empty() {
-        Assertions.assertTrue(documentTypeRepository.findAll().size() > 0, "List is empty");
+        Assertions.assertFalse(documentTypeRepository.findAll().isEmpty(), "List is empty");
     }
 }
